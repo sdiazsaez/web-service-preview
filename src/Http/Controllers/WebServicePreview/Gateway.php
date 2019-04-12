@@ -69,7 +69,7 @@ class Gateway {
     public function serviceResponse(Request $request, string $provider, string $service) {
         $this->setSelectedServiceKeys($provider, $service);
         $data = $this->getViewData();
-        $data['response'] = ServiceRequest::getRequestableWithServiceNames($provider, $service, $request->all())->getResponse();
+        $data['response'] = ServiceRequest::getRequestableWithServiceNames($provider, $service, $request->all(), false)->getResponse();
 
         return view('larangular.web-service-preview::index', $data);
     }
