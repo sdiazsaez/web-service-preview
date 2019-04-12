@@ -1,6 +1,6 @@
 {
     "name": "larangular/web-service-preview",
-    "description": "scrapper support for CLF to CLP currency",
+    "description": "preview registered services in web-service-manager",
     "license": "MIT",
     "authors": [
         {
