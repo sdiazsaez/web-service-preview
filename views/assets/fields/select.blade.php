@@ -8,7 +8,7 @@
                         {{ $option[$value['keys']['label']] }}
                     </option>
                     @else
-                <option {{ ($option == $value['value'])?'selected':'' }}>{{ $option }}</option>
+                <option {{ ($option == @$value['value'])?'selected':'' }}>{{ $option }}</option>
                 @endif
             @endforeach
         </select>
