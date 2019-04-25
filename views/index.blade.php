@@ -109,6 +109,7 @@
         </div>
         <div class="col-5">
             <h3>{{ $descriptor->provider() }} - {{ $descriptor->serviceName() }}</h3>
+            <span>{{$service_url}}</span>
             @isset($service['description'])
                 <p>{{ $service['description'] }}</p>
             @endisset

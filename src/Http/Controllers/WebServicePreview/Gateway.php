@@ -25,13 +25,13 @@ use Msd\Sura\Autoclick\Generar\{Cotizacion, CotizacionRequest, Poliza, PolizaReq
 use Msd\Sura\Autoclick\Models\ServiceForm;
 use Psy\Util\Str;
 use \Sura\Autoclick\{ServiceType, StructType, EnumType, ClassMap};
-
-
 use Larangular\WebServiceManager\Register\Service;
+use Larangular\WebServiceManager\Traits\ServiceUrl;
 
 
 class Gateway {
 
+    use ServiceUrl;
     private $serviceDescription;
     private $routePrefix = 'larangular.webservice-preview.';
     private $serviceRecords;
@@ -69,7 +69,8 @@ class Gateway {
     public function serviceResponse(Request $request, string $provider, string $service) {
         $this->setSelectedServiceKeys($provider, $service);
         $data = $this->getViewData();
-        $data['response'] = ServiceRequest::getRequestableWithServiceNames($provider, $service, $request->all(), false)->getResponse();
+        $data['response'] = ServiceRequest::getRequestableWithServiceNames($provider, $service, $request->all(), false)
+                                          ->getResponse();
 
         return view('larangular.web-service-preview::index', $data);
     }
@@ -97,12 +98,15 @@ class Gateway {
     }
 
     private function getViewData(): array {
+        $descriptor = $this->getDescriptor();
+        $serviceUrl = $this->getServiceUrl($descriptor->provider(), $descriptor->serviceName());
         return [
-            'providers'  => $this->getProviderRoutes(),
-            'services'   => $this->getServiceRoutes(),
-            'selection'  => $this->selectedServiceKeys,
-            'form'       => $this->getForm(),
-            'descriptor' => $this->getDescriptor(),
+            'service_url' => $serviceUrl,
+            'providers'   => $this->getProviderRoutes(),
+            'services'    => $this->getServiceRoutes(),
+            'selection'   => $this->selectedServiceKeys,
+            'form'        => $this->getForm(),
+            'descriptor'  => $descriptor,
         ];
     }
 
@@ -122,13 +126,13 @@ class Gateway {
     private function getProviderRoutes() {
         $providers = $this->serviceRecords->getProviders();
         $response = [];
-        foreach($providers as $provider) {
+        foreach ($providers as $provider) {
             $response[] = [
-                'route' => 'larangular.webservice-preview.service.form',
-                'name' => $provider,
+                'route'  => 'larangular.webservice-preview.service.form',
+                'name'   => $provider,
                 'params' => [
                     'provider' => $provider,
-                    'service' => null
+                    'service'  => null,
                 ],
             ];
         }
@@ -139,13 +143,13 @@ class Gateway {
     private function getServiceRoutes() {
         $services = $this->serviceRecords->getServiceNames($this->selectedServiceKeys['provider']);
         $response = [];
-        foreach($services as $service) {
+        foreach ($services as $service) {
             $response[] = [
-                'route' => 'larangular.webservice-preview.service.form',
-                'name' => $service,
+                'route'  => 'larangular.webservice-preview.service.form',
+                'name'   => $service,
                 'params' => [
                     'provider' => $this->selectedServiceKeys['provider'],
-                    'service' => $service
+                    'service'  => $service,
                 ],
             ];
         }
